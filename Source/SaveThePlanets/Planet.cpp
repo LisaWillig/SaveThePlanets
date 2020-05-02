@@ -23,7 +23,7 @@ void APlanet::BeginPlay()
 	
     GameInstance = Cast<UUniverseGameInstance>(GetGameInstance());
     SetActorScale3D(FVector(Radius * 0.001));
-    
+    Distance = FVector::Dist2D(GetActorLocation(), FVector(0, 0, 0)) * 0.01;
 }
 
 // Called every frame
@@ -36,28 +36,33 @@ void APlanet::Tick(float DeltaTime)
     }
 
     float TimeControl = GameInstance->GetTime();
-    calculateVeloctiy(DeltaTime* TimeControl);
+    calculateVeloctiy(DeltaTime*TimeControl);
 }
 
 void APlanet::calculateVeloctiy(float DeltaTime) {
     if (MySun == nullptr) {return;}
 
-    float dist = FVector::Dist2D(GetActorLocation(), FVector(0, 0, 0))*0.01; // Distance in Meter
-    float velocityMagnitude = GravityConstant* MySun->StarMass / dist;
-    
+    float dist = FVector::Dist2D(GetActorLocation(), FVector(0, 0, 0)) * 0.01; // Distance in Meter
+    float velocityMagnitude = GravityConstant * MySun->StarMass / dist;
+
     FVector DirectionForce = -(GetActorLocation().GetSafeNormal());
     FVector VelocityForce = FVector(DirectionForce.Y, -DirectionForce.X, 0);
-   
-    float winkel = velocityMagnitude* DeltaTime;
+
+    float winkel = velocityMagnitude * DeltaTime;
     float bogen = winkel / 360 * 2 * PI;
 
-    float DeltaX = dist * FMath::Cos(FMath::DegreesToRadians(winkel));
-    float DeltaY = dist * FMath::Sin(FMath::DegreesToRadians(winkel));
     FVector DeltaPosition = bogen * VelocityForce;
-    FVector Test = FVector(DeltaX, DeltaY, 0);
 
-    UE_LOG(LogTemp, Warning, TEXT("Test: %s"), *Test.ToCompactString())
-    SetActorLocation(DeltaPosition + GetActorLocation());
+    /*  when the Time is large, so the angle to cross is big, 
+        the approximation that Deltav = v* Delta_angle is not valid anymore
+        As a result, the planets would move outwards in a spiral, 
+        the higher the angle eg. "time" is.
+     */
+    float DistanzError = dist - Distance;
+    FVector ErrorCorrection = DistanzError * DirectionForce;
+
+    SetActorLocation(DeltaPosition + GetActorLocation()+ErrorCorrection);
+    
 }
 
 void APlanet::GetTheSun() {
