@@ -35,7 +35,7 @@ public:
 	float PlanetMass = 100; //kg 
 
 	UPROPERTY(EditAnywhere, Category = "Planet")
-	float Radius = 1000; //km (UMRECHNEN!) 
+	float Radius = 1000; //km 
 
 	UPROPERTY(EditAnywhere, Category = "Planet")
 	float Distance = 100; //km (UMRECHNEN!) 

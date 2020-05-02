@@ -22,6 +22,8 @@ void APlanet::BeginPlay()
 	Super::BeginPlay();
 	
     GameInstance = Cast<UUniverseGameInstance>(GetGameInstance());
+    SetActorScale3D(FVector(Radius * 0.001));
+    
 }
 
 // Called every frame
@@ -32,9 +34,9 @@ void APlanet::Tick(float DeltaTime)
     if (MySun == nullptr) {
         GetTheSun();
     }
+
     float TimeControl = GameInstance->GetTime();
-    UE_LOG(LogTemp, Warning, TEXT("SliderValue: %f"), TimeControl)
-    calculateVeloctiy(DeltaTime*TimeControl);
+    calculateVeloctiy(DeltaTime* TimeControl);
 }
 
 void APlanet::calculateVeloctiy(float DeltaTime) {
@@ -46,10 +48,16 @@ void APlanet::calculateVeloctiy(float DeltaTime) {
     FVector DirectionForce = -(GetActorLocation().GetSafeNormal());
     FVector VelocityForce = FVector(DirectionForce.Y, -DirectionForce.X, 0);
    
-    float winkel = velocityMagnitude* DeltaTime / dist;
-    float bogen = winkel / 360 * 2 * 3.14 * dist;
+    float winkel = velocityMagnitude* DeltaTime;
+    float bogen = winkel / 360 * 2 * PI;
 
-    SetActorLocation(bogen * VelocityForce + GetActorLocation());
+    float DeltaX = dist * FMath::Cos(FMath::DegreesToRadians(winkel));
+    float DeltaY = dist * FMath::Sin(FMath::DegreesToRadians(winkel));
+    FVector DeltaPosition = bogen * VelocityForce;
+    FVector Test = FVector(DeltaX, DeltaY, 0);
+
+    UE_LOG(LogTemp, Warning, TEXT("Test: %s"), *Test.ToCompactString())
+    SetActorLocation(DeltaPosition + GetActorLocation());
 }
 
 void APlanet::GetTheSun() {
