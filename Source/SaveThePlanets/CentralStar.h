@@ -27,5 +27,5 @@ public:
 	UStaticMeshComponent* StarMesh;
 
 	UPROPERTY(EditAnywhere, Category = "Star")
-	float StarMass = 1000; //kg 
+	float StarMass = 10000; //kg 
 };

@@ -22,6 +22,7 @@ protected:
 	void calculateVeloctiy(float DeltaTime);
 
 	class ACentralStar* MySun;
+	class UUniverseGameInstance* GameInstance;
 
 public:	
 	// Called every frame

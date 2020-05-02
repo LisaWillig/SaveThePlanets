@@ -4,6 +4,7 @@
 #include "Planet.h"
 #include "CentralStar.h"
 #include "DrawDebugHelpers.h"
+#include "UniverseGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -20,6 +21,7 @@ void APlanet::BeginPlay()
 {
 	Super::BeginPlay();
 	
+    GameInstance = Cast<UUniverseGameInstance>(GetGameInstance());
 }
 
 // Called every frame
@@ -30,29 +32,24 @@ void APlanet::Tick(float DeltaTime)
     if (MySun == nullptr) {
         GetTheSun();
     }
-
-    calculateVeloctiy(DeltaTime);
+    float TimeControl = GameInstance->GetTime();
+    UE_LOG(LogTemp, Warning, TEXT("SliderValue: %f"), TimeControl)
+    calculateVeloctiy(DeltaTime*TimeControl);
 }
 
 void APlanet::calculateVeloctiy(float DeltaTime) {
     if (MySun == nullptr) {return;}
+
     float dist = FVector::Dist2D(GetActorLocation(), FVector(0, 0, 0))*0.01; // Distance in Meter
-    float velocityMagnitude = GravityConstant * MySun->StarMass/ dist;
-
+    float velocityMagnitude = GravityConstant* MySun->StarMass / dist;
+    
     FVector DirectionForce = -(GetActorLocation().GetSafeNormal());
-    UE_LOG(LogTemp, Warning, TEXT("Force Direction: %s"), *DirectionForce.ToCompactString())
-
     FVector VelocityForce = FVector(DirectionForce.Y, -DirectionForce.X, 0);
-    UE_LOG(LogTemp, Warning, TEXT("Velocity Direction: %s"), *VelocityForce.ToCompactString())
+   
+    float winkel = velocityMagnitude* DeltaTime / dist;
+    float bogen = winkel / 360 * 2 * 3.14 * dist;
 
-    const UWorld* World = GetWorld();
-    if (World != nullptr) { DrawDebugLine(World, GetActorLocation(), VelocityForce, FColor(255, 50, 50, 1), false, 2, 2, 5); }
-    UE_LOG(LogTemp, Warning, TEXT("Are Othogonal? %i"), FVector::Orthogonal(VelocityForce, DirectionForce))
-        //if (World != nullptr) { DrawDebugLine(World, DirectionForce, GetActorLocation(), FColor(255, 50, 50, 1), true, 2, 2, 5); }
-
-    FVector NewPos = VelocityForce * velocityMagnitude;
-    UE_LOG(LogTemp, Warning, TEXT("NewPos? %s"), *NewPos.ToCompactString())
-    SetActorLocation(NewPos);
+    SetActorLocation(bogen * VelocityForce + GetActorLocation());
 }
 
 void APlanet::GetTheSun() {
