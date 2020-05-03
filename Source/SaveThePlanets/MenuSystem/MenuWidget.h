@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "MenuInterface.h"
 #include "MenuWidget.generated.h"
 
 /**
@@ -18,4 +19,9 @@ public:
 
     void Setup();
     virtual void OnLevelRemovedFromWorld(ULevel* InLevel, UWorld* InWorld) override;
+    void SetMenuInterface(IMenuInterface* Interface);
+
+protected:
+
+    IMenuInterface* MenuInterface;
 };

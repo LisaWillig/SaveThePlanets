@@ -3,6 +3,12 @@
 
 #include "MenuWidget.h"
 
+
+
+void UMenuWidget::SetMenuInterface(IMenuInterface* Interface) {
+	this->MenuInterface = Interface;
+}
+
 void UMenuWidget::Setup() {
 	AddToViewport();
 	UWorld* World = GetWorld();
@@ -10,7 +16,7 @@ void UMenuWidget::Setup() {
 
 	APlayerController* PlayerController = World->GetFirstPlayerController();
 
-	FInputModeUIOnly InputMode;
+	FInputModeGameAndUI InputMode;
 	InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
 	InputMode.SetWidgetToFocus(this->TakeWidget());
 

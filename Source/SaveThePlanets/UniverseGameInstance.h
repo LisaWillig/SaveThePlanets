@@ -4,13 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
+#include "MenuSystem/MenuInterface.h"
 #include "UniverseGameInstance.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class SAVETHEPLANETS_API UUniverseGameInstance : public UGameInstance
+class SAVETHEPLANETS_API UUniverseGameInstance : public UGameInstance, public IMenuInterface
 {
 	GENERATED_BODY()
 
@@ -24,14 +25,36 @@ public:
     void SetTime(float NewTime);
     float GetTime();
 
-private:
+    void Start();
+    void Quit();
+    void Highscore();
 
+    UFUNCTION(BlueprintCallable)
+    void LoadMainMenu();
+
+    UFUNCTION(BlueprintCallable)
+    void TravelMainMenu();
+
+    UFUNCTION(BlueprintCallable)
+    void LoadHighscoreMenu();
+
+    UFUNCTION(BlueprintCallable)
+    void LoadPauseMenu();
+
+    UFUNCTION(BlueprintCallable)
+    void TravelHighscoreMenu();
+
+    
+private:
+    float TimeValue;
+
+    TSubclassOf<class UUserWidget> MainMenuClass;
     TSubclassOf<class UUserWidget> SliderClass;
-    void QuitGame();
+    TSubclassOf<class UUserWidget> HighscoreClass;
+    TSubclassOf<class UUserWidget> PauseMenuClass;
 
     class UMenuWidget* Slider;
+    class UMenuWidget* MainMenu;
 
-    void Setup(class UMenuWidget* Slider);
 
-    float TimeValue;
 };
