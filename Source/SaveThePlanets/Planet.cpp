@@ -14,6 +14,9 @@ APlanet::APlanet()
 	PrimaryActorTick.bCanEverTick = true;
 
 	PlanetMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlanetMesh"));
+    CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("PlanetCollision"));
+    CapsuleComponent->InitCapsuleSize(Radius * 0.05, Radius * 0.05);
+   
 }
 
 // Called when the game starts or when spawned
@@ -62,6 +65,7 @@ void APlanet::calculateVeloctiy(float DeltaTime) {
     FVector ErrorCorrection = DistanzError * DirectionForce;
 
     SetActorLocation(DeltaPosition + GetActorLocation()+ErrorCorrection);
+    CapsuleComponent->SetWorldTransform(GetActorTransform());
     
 }
 
@@ -78,3 +82,6 @@ void APlanet::GetTheSun() {
    }
    }
        
+void APlanet::Collision(float mass) {
+    UE_LOG(LogTemp, Warning, TEXT("My mass %f is now %f :("), PlanetMass, PlanetMass-mass)
+}

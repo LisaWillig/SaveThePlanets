@@ -2,6 +2,7 @@
 
 
 #include "CentralStar.h"
+#include "Components/CapsuleComponent.h"
 
 // Sets default values
 ACentralStar::ACentralStar()
@@ -9,6 +10,8 @@ ACentralStar::ACentralStar()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	StarMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StarMesh"));
+	CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("StarCollision"));
+	CapsuleComponent->InitCapsuleSize(100, 100);
 }
 
 // Called when the game starts or when spawned

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
 #include "MenuSystem/MenuInterface.h"
+#include "Opponents.h"
 #include "UniverseGameInstance.generated.h"
 
 /**
@@ -43,6 +44,8 @@ public:
 
     UFUNCTION(BlueprintCallable)
     void TravelHighscoreMenu();
+
+    //AOpponents OpponentSpawner;
 
     
 private:

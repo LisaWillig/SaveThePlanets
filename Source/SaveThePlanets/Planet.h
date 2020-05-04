@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Components/CapsuleComponent.h"
 #include "Planet.generated.h"
 
 UCLASS()
@@ -28,8 +29,13 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void Collision(float mass);
+
 	UPROPERTY(VisibleAnywhere, Category = "Planet")
 	UStaticMeshComponent* PlanetMesh;
+
+	UPROPERTY(VisibleAnywhere, Category = "Planet")
+		UCapsuleComponent* CapsuleComponent;
 
 	UPROPERTY(EditAnywhere, Category = "Planet")
 	float PlanetMass = 100; //kg 

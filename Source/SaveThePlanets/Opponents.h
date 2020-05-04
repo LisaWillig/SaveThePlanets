@@ -4,16 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "CentralStar.generated.h"
+#include "TimerManager.h"
+#include "Opponents.generated.h"
 
 UCLASS()
-class SAVETHEPLANETS_API ACentralStar : public AActor
+class SAVETHEPLANETS_API AOpponents : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	ACentralStar();
+	AOpponents();
 
 protected:
 	// Called when the game starts or when spawned
@@ -22,14 +23,14 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	FTimerHandle TimerHandle;
+	void RepeatingFunction();
 
-	UPROPERTY(VisibleAnywhere, Category = "Star")
-	class UStaticMeshComponent* StarMesh;
+	int RepeatingCallsRemaining = 10;
+	FVector GenerateSpawnPoint();
+	float GenerateSpawnRotation();
 
-	UPROPERTY(VisibleAnywhere, Category = "Star")
-	class UCapsuleComponent* CapsuleComponent;
+	UPROPERTY(EditDefaultsOnly, Category = "Comet")
+	TSubclassOf<class AComet> CometClass;
 
-
-	UPROPERTY(EditAnywhere, Category = "Star")
-	float StarMass = 10000; //kg 
 };
