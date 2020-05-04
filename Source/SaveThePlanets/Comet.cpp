@@ -20,12 +20,10 @@ void AComet::BeginPlay()
 {
 	Super::BeginPlay();
 	CometMesh->OnComponentBeginOverlap.AddDynamic(this, &AComet::OnOverlapBegin);
-	//FVector Spawn = GenerateSpawnPoint();
 	//rad = FMath::Abs(RotationVector());
 	rad = 100;
 	Velocity = GetActorForwardVector();
 	//SetActorLocation(Spawn);
-	mass = 10;
 	UE_LOG(LogTemp, Warning, TEXT("Radius: %f"), rad)
 }
 
@@ -47,6 +45,13 @@ void AComet::ApplyRotation(float DeltaTime) {
 	Velocity = RotationDelta.RotateVector(Velocity);
 }
 
+void AComet::SetParameters(float setMass, float size, float setSpeed) {
+	this->mass = setMass;
+	UE_LOG(LogTemp, Warning, TEXT("Set Size: %f"), size)
+	SetActorScale3D(FVector(size, size, size));
+	this->speed = setSpeed;
+}
+
 void AComet::ApplyVelocity(float DeltaTime) {
 	float DeltaPosition = speed * DeltaTime;
 	FVector Translation = DeltaPosition * Velocity;
@@ -59,8 +64,8 @@ void AComet::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherAc
 	APlanet* Planet = Cast<APlanet>(OtherActor);
 	if (Planet) {
 		Planet->Collision(mass);
+		this->Destroy();
+		return;
 	}
-	UE_LOG(LogTemp, Warning, TEXT("Collision! %s"), *OverlappedComp->GetName())
-	this->Destroy();
 
 }

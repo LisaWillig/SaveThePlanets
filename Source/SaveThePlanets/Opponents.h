@@ -28,7 +28,7 @@ public:
 
 	int RepeatingCallsRemaining = 10;
 	FVector GenerateSpawnPoint();
-	float GenerateSpawnRotation();
+	FRotator GenerateSpawnRotation(FVector SpawnPoint);
 
 	UPROPERTY(EditDefaultsOnly, Category = "Comet")
 	TSubclassOf<class AComet> CometClass;

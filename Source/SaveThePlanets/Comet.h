@@ -25,6 +25,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	FVector GenerateSpawnPoint();
+	void SetParameters(float mass, float size, float speed);
 	void ApplyVelocity(float DeltaTime);
 	void ApplyRotation(float DeltaTime);
 	float RotationVector();

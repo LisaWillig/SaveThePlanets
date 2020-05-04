@@ -3,6 +3,7 @@
 
 #include "Opponents.h"
 #include "Comet.h"
+#include "DrawDebugHelpers.h"
 
 // Sets default values
 AOpponents::AOpponents()
@@ -23,7 +24,15 @@ void AOpponents::BeginPlay()
 void AOpponents::RepeatingFunction()
 {
 	if (CometClass != nullptr) {
-		auto enemy = GetWorld()->SpawnActor<AComet>(CometClass, GenerateSpawnPoint(), FRotator());
+		FVector SpawnPoint = GenerateSpawnPoint();
+		FRotator Rotation = GenerateSpawnRotation(SpawnPoint);
+		auto enemy = GetWorld()->SpawnActor<AComet>(CometClass, SpawnPoint, Rotation);
+
+		float mass = FMath::RandRange(1, 100);
+		float size = FMath::RandRange(0.05f, 0.2f);
+		float speed = FMath::RandRange(10, 500);
+
+		enemy->SetParameters(mass, size, speed);
 	}
 
     /* Example for clearing Timer
@@ -34,27 +43,37 @@ void AOpponents::RepeatingFunction()
 
 }
 
-float AOpponents::GenerateSpawnRotation() {
+FRotator AOpponents::GenerateSpawnRotation(FVector SpawnPoint) {
 	FBox BoxPointInCircle = FBox(FVector(-500, -500, 0), FVector(500, 500, 0));
 	FVector PointOnCircle = FMath::RandPointInBox(BoxPointInCircle);
-	float Radius = FMath::Sqrt(FMath::Square(PointOnCircle.X) + FMath::Square(PointOnCircle.Y));
 
 	//A: Actor Location
 	//B: Random Point in Level Area
-	float alphaAngle = FMath::RandRange(1., 10); // Angle (Degree) at radius between A and B
+	float alphaAngle = FMath::RandRange(1., 40); // Angle (Degree) at radius between A and B
 	float betaAngle = FMath::RandRange(1., (179 - alphaAngle)); // Angle (Degree) at ActorLocation 
 
-	/*
-	float Radius = (FMath::Abs(FVector::Dist(GetActorLocation(), PointOnCircle)) * FMath::Sin(betaAngle)) / FMath::Sin(alphaAngle);
-	UE_LOG(LogTemp, Warning, TEXT("Point To Cross: %s"), *PointOnCircle.ToCompactString())
+	float Radius = (FVector::Dist(SpawnPoint, PointOnCircle) * FMath::Sin(betaAngle)) / FMath::Sin(alphaAngle);
+	FVector CenterCircle = FVector(SpawnPoint.X + FMath::Sin(90 - alphaAngle) * Radius, SpawnPoint.Y + FMath::Sin(90 - betaAngle) * Radius, 0);
 
-		FVector InitialDirection = (PointOnCircle - GetActorLocation()).GetSafeNormal();
+	FVector InitialDirection = (PointOnCircle - SpawnPoint).GetSafeNormal();
 	FVector CurrentRotation = GetActorForwardVector();
 	float rotate = FMath::Atan(CurrentRotation.X - InitialDirection.X);
-	FQuat rotation = FQuat(GetActorUpVector(), rotate);
-	SetActorRotation(rotation);
-	*/
-	return Radius;
+	FQuat rotation = FQuat(FVector(0,0,1), rotate);
+	const FMatrix TransformMatrix;
+	DrawDebugCircle(
+		GetWorld(),
+		CenterCircle,
+		Radius,
+		50,
+		FColor(0, 0, 255, 1),
+		true,
+		100.f,
+		1,
+		10,
+		FVector(1, 0, 0),
+		FVector(0, 1, 0),
+		true);
+	return rotation.Rotator();
 }
 
 FVector AOpponents::GenerateSpawnPoint() {
