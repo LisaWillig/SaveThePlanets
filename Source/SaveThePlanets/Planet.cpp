@@ -70,7 +70,7 @@ void APlanet::calculateVeloctiy(float DeltaTime) {
 }
 
 void APlanet::GetTheSun() {
-        TArray<AActor*> Stars;
+   TArray<AActor*> Stars;
    TSubclassOf< ACentralStar > CentralStar;
    CentralStar = ACentralStar::StaticClass();
    UGameplayStatics::GetAllActorsOfClass(GetWorld(), CentralStar, Stars);
@@ -80,8 +80,14 @@ void APlanet::GetTheSun() {
    else {
        UE_LOG(LogTemp, Warning, TEXT("No Sun!"))
    }
-   }
+}
        
 void APlanet::Collision(float mass) {
-    UE_LOG(LogTemp, Warning, TEXT("My mass %f is now %f :("), PlanetMass, PlanetMass-mass)
+    PlanetMass = PlanetMass - mass;
+    if (PlanetMass <= 0) {
+        auto Instance = Cast<UUniverseGameInstance>(GetGameInstance());
+        if (Instance != nullptr) {
+            Instance->GameOver();
+        }
+    }
 }

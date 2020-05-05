@@ -45,16 +45,21 @@ public:
     UFUNCTION(BlueprintCallable)
     void TravelHighscoreMenu();
 
+    UFUNCTION(BlueprintCallable)
+    void GameOver();
+
     //AOpponents OpponentSpawner;
 
-    
+    bool bGameOver = false;
+
 private:
     float TimeValue;
 
     TSubclassOf<class UUserWidget> MainMenuClass;
     TSubclassOf<class UUserWidget> SliderClass;
     TSubclassOf<class UUserWidget> HighscoreClass;
-    TSubclassOf<class UUserWidget> PauseMenuClass;
+    TSubclassOf<class UUserWidget> PauseMenuClass; 
+    TSubclassOf<class UUserWidget> EndGameMenuClass;
 
     class UMenuWidget* Slider;
     class UMenuWidget* MainMenu;

@@ -9,7 +9,9 @@
 #include "MenuSystem/MainMenu.h"
 #include "MenuSystem/HighscoreMenu.h"
 #include "MenuSystem/PauseMenu.h"
+#include "MenuSystem/EndGameMenu.h"
 #include "Components/Slider.h"
+
 
 UUniverseGameInstance::UUniverseGameInstance() {
 
@@ -28,6 +30,10 @@ UUniverseGameInstance::UUniverseGameInstance() {
 	ConstructorHelpers::FClassFinder<UUserWidget> PauseMenuBPClass(TEXT("/Game/HUD/WBP_PauseMenu"));
 	if (!ensure(PauseMenuBPClass.Class != nullptr))return;
 	PauseMenuClass = PauseMenuBPClass.Class;
+
+	ConstructorHelpers::FClassFinder<UUserWidget> EndGameMenuBPClass(TEXT("/Game/HUD/WBP_GameOver"));
+	if (!ensure(EndGameMenuBPClass.Class != nullptr))return;
+	EndGameMenuClass = EndGameMenuBPClass.Class;
 }
 
 
@@ -82,8 +88,16 @@ void UUniverseGameInstance::LoadPauseMenu() {
 	PauseMenu->SetMenuInterface(this);
 }
 
+void UUniverseGameInstance::GameOver() {
+	if (!ensure(EndGameMenuClass != nullptr))return;
+	auto EndGameMenu = CreateWidget<UEndGameMenu>(this, EndGameMenuClass);
+	if (!ensure(EndGameMenu != nullptr))return;
+	EndGameMenu->Setup();
+	EndGameMenu->SetMenuInterface(this);
+}
 
 void UUniverseGameInstance::Start() {
+	bGameOver = false;
 	APlayerController* PlayerController = GetFirstLocalPlayerController();
 	if (!ensure(PlayerController != nullptr)) return;
 	PlayerController->ClientTravel("/Game/Maps/Universe", ETravelType::TRAVEL_Absolute);
