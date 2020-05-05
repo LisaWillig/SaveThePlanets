@@ -29,6 +29,11 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	class UButton* MainMenuButton;
 
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* TextScore;
+
+	float Score = 0;
+
 	UFUNCTION()
 	void Quit();
 	UFUNCTION()

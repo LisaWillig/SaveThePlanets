@@ -87,6 +87,7 @@ void APlanet::Collision(float mass) {
     if (PlanetMass <= 0) {
         auto Instance = Cast<UUniverseGameInstance>(GetGameInstance());
         if (Instance != nullptr) {
+            this->Destroy();
             Instance->GameOver();
         }
     }

@@ -3,6 +3,8 @@
 
 #include "EndGameMenu.h"
 #include "Components/Button.h"
+#include "../UniverseGameInstance.h"
+#include "Components/TextBlock.h"
 
 bool UEndGameMenu::Initialize() {
 	bool Success = Super::Initialize();
@@ -18,8 +20,15 @@ bool UEndGameMenu::Initialize() {
 	if (!ensure(MainMenuButton != nullptr)) return false;
 	MainMenuButton->OnClicked.AddDynamic(this, &UEndGameMenu::TravelMainMenu);
 
+	auto gameInstance = Cast<UUniverseGameInstance>(GetWorld()->GetGameInstance());
+	if (gameInstance != nullptr) {
+		Score = gameInstance->Score;
+	}
+	TextScore->SetText(FText::AsNumber(Score));
+
 	return true;
 }
+
 
 void UEndGameMenu::Start() {
 	if (MenuInterface == nullptr) return;

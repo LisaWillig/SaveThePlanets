@@ -11,6 +11,7 @@
 #include "MenuSystem/PauseMenu.h"
 #include "MenuSystem/EndGameMenu.h"
 #include "Components/Slider.h"
+#include "SaveThePlanetsGameModeBase.h"
 
 
 UUniverseGameInstance::UUniverseGameInstance() {
@@ -89,6 +90,14 @@ void UUniverseGameInstance::LoadPauseMenu() {
 }
 
 void UUniverseGameInstance::GameOver() {
+	auto gameMode = Cast<ASaveThePlanetsGameModeBase>(GetWorld()->GetAuthGameMode());
+	if (gameMode != nullptr) {
+		gameMode->clearTimerHighScore();
+		Score = gameMode->Score;
+	}
+	else {
+		UE_LOG(LogTemp, Warning, TEXT("No Gamemode!"))
+	}
 	Slider->SetIsEnabled(false);
 	if (!ensure(EndGameMenuClass != nullptr))return;
 	auto EndGameMenu = CreateWidget<UEndGameMenu>(this, EndGameMenuClass);

@@ -51,7 +51,7 @@ public:
     //AOpponents OpponentSpawner;
 
     bool bGameOver = false;
-
+    float Score;
 private:
     float TimeValue;
 
