@@ -13,18 +13,14 @@ AComet::AComet()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	CometMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CometMesh"));
-
+	RootComponent= CometMesh;
 }
 
 void AComet::BeginPlay()
 {
 	Super::BeginPlay();
 	CometMesh->OnComponentBeginOverlap.AddDynamic(this, &AComet::OnOverlapBegin);
-	//rad = FMath::Abs(RotationVector());
-	rad = 100;
 	Velocity = GetActorForwardVector();
-	//SetActorLocation(Spawn);
-	UE_LOG(LogTemp, Warning, TEXT("Radius: %f"), rad)
 }
 
 // Called every frame
@@ -39,7 +35,7 @@ void AComet::Tick(float DeltaTime)
 }
 
 void AComet::ApplyRotation(float DeltaTime) {
-	float RotationAngle = Velocity.Size() * DeltaTime / (2 * rad); // in Radians
+	float RotationAngle = Velocity.Size() * DeltaTime / (2 * 10); // in Radians
 	FQuat RotationDelta(GetActorUpVector(), 2*RotationAngle);
 	AddActorWorldRotation(RotationDelta);
 	Velocity = RotationDelta.RotateVector(Velocity);
@@ -47,7 +43,6 @@ void AComet::ApplyRotation(float DeltaTime) {
 
 void AComet::SetParameters(float setMass, float size, float setSpeed) {
 	this->mass = setMass;
-	UE_LOG(LogTemp, Warning, TEXT("Set Size: %f"), size)
 	SetActorScale3D(FVector(size, size, size));
 	this->speed = setSpeed;
 }

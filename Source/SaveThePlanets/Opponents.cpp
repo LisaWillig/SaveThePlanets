@@ -46,34 +46,17 @@ void AOpponents::RepeatingFunction()
 FRotator AOpponents::GenerateSpawnRotation(FVector SpawnPoint) {
 	FBox BoxPointInCircle = FBox(FVector(-500, -500, 0), FVector(500, 500, 0));
 	FVector PointOnCircle = FMath::RandPointInBox(BoxPointInCircle);
-
+	
 	//A: Actor Location
 	//B: Random Point in Level Area
-	float alphaAngle = FMath::RandRange(1., 40); // Angle (Degree) at radius between A and B
-	float betaAngle = FMath::RandRange(1., (179 - alphaAngle)); // Angle (Degree) at ActorLocation 
-
+	float alphaAngle = FMath::RandRange(10., 40); // Angle (Degree) at radius between A and B
+	float betaAngle = (180 - alphaAngle) / 2;
+	
 	float Radius = (FVector::Dist(SpawnPoint, PointOnCircle) * FMath::Sin(betaAngle)) / FMath::Sin(alphaAngle);
-	FVector CenterCircle = FVector(SpawnPoint.X + FMath::Sin(90 - alphaAngle) * Radius, SpawnPoint.Y + FMath::Sin(90 - betaAngle) * Radius, 0);
 
 	FVector InitialDirection = (PointOnCircle - SpawnPoint).GetSafeNormal();
-	FVector CurrentRotation = GetActorForwardVector();
-	float rotate = FMath::Atan(CurrentRotation.X - InitialDirection.X);
-	FQuat rotation = FQuat(FVector(0,0,1), rotate);
-	const FMatrix TransformMatrix;
-	DrawDebugCircle(
-		GetWorld(),
-		CenterCircle,
-		Radius,
-		50,
-		FColor(0, 0, 255, 1),
-		true,
-		100.f,
-		1,
-		10,
-		FVector(1, 0, 0),
-		FVector(0, 1, 0),
-		true);
-	return rotation.Rotator();
+	//DrawDebugLine(GetWorld(), SpawnPoint, PointOnCircle, FColor(0, 255, 0, 1), true, -1.f, 2, 10.f);
+	return InitialDirection.Rotation();
 }
 
 FVector AOpponents::GenerateSpawnPoint() {
