@@ -16,7 +16,7 @@ void UMenuWidget::Setup() {
 
 	APlayerController* PlayerController = World->GetFirstPlayerController();
 
-	FInputModeGameAndUI InputMode;
+	FInputModeUIOnly InputMode;
 	InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
 	InputMode.SetWidgetToFocus(this->TakeWidget());
 
@@ -27,14 +27,5 @@ void UMenuWidget::Setup() {
 
 void UMenuWidget::OnLevelRemovedFromWorld(ULevel* InLevel, UWorld* InWorld) {
 	RemoveFromViewport();
-	auto* world = GetWorld();
-	if (!ensure(world != nullptr))
-		return;
-	auto* playerController = world->GetFirstPlayerController();
-	if (!ensure(playerController != nullptr))
-		return;
-	FInputModeGameOnly inputMode;
-	playerController->SetInputMode(inputMode);
-	playerController->bShowMouseCursor = false;
 	Super::OnLevelRemovedFromWorld(InLevel, InWorld);
 }

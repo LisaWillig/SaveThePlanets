@@ -89,6 +89,7 @@ void UUniverseGameInstance::LoadPauseMenu() {
 }
 
 void UUniverseGameInstance::GameOver() {
+	Slider->SetIsEnabled(false);
 	if (!ensure(EndGameMenuClass != nullptr))return;
 	auto EndGameMenu = CreateWidget<UEndGameMenu>(this, EndGameMenuClass);
 	if (!ensure(EndGameMenu != nullptr))return;
