@@ -48,10 +48,15 @@ public:
     UFUNCTION(BlueprintCallable)
     void GameOver();
 
-    //AOpponents OpponentSpawner;
+    UFUNCTION(BlueprintNativeEvent, Category = "SaveScore")
+    void saveHighScore(float score);
 
     bool bGameOver = false;
     float Score;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+    float HighScore;
+
 private:
     float TimeValue;
 

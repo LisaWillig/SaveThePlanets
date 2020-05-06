@@ -91,12 +91,15 @@ void UUniverseGameInstance::LoadPauseMenu() {
 
 void UUniverseGameInstance::GameOver() {
 	auto gameMode = Cast<ASaveThePlanetsGameModeBase>(GetWorld()->GetAuthGameMode());
+	
 	if (gameMode != nullptr) {
 		gameMode->clearTimerHighScore();
 		Score = gameMode->Score;
-	}
-	else {
-		UE_LOG(LogTemp, Warning, TEXT("No Gamemode!"))
+		if (Score > HighScore) {
+			HighScore = Score;
+			UE_LOG(LogTemp, Warning, TEXT("Highscore: %f, Score: %f"), HighScore, Score)
+			saveHighScore(HighScore);
+		}
 	}
 	Slider->SetIsEnabled(false);
 	if (!ensure(EndGameMenuClass != nullptr))return;
@@ -105,6 +108,7 @@ void UUniverseGameInstance::GameOver() {
 	EndGameMenu->Setup();
 	EndGameMenu->SetMenuInterface(this);
 }
+void UUniverseGameInstance::saveHighScore_Implementation(float score){}
 
 void UUniverseGameInstance::Start() {
 	bGameOver = false;
