@@ -23,6 +23,7 @@ public:
     UFUNCTION(BlueprintCallable)
     void LoadSlider();
 
+    void RefocusSlider();
     void SetTime(float NewTime);
     float GetTime();
 

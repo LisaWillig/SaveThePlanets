@@ -12,6 +12,7 @@
 #include "MenuSystem/EndGameMenu.h"
 #include "Components/Slider.h"
 #include "SaveThePlanetsGameModeBase.h"
+#include "Kismet/GameplayStatics.h"
 
 
 UUniverseGameInstance::UUniverseGameInstance() {
@@ -43,6 +44,12 @@ void UUniverseGameInstance::LoadSlider() {
 	Slider = CreateWidget<UMenuWidget>(this, SliderClass);
 	if (!ensure(Slider != nullptr))return;
 	Slider->Setup();
+}
+
+void UUniverseGameInstance::RefocusSlider() {
+	if (Slider != nullptr) {
+		Slider->SetFocus();
+	}
 }
 
 void UUniverseGameInstance::SetTime(float NewTime) {
@@ -85,8 +92,13 @@ void UUniverseGameInstance::LoadPauseMenu() {
 	if (!ensure(PauseMenuClass != nullptr))return;
 	auto PauseMenu = CreateWidget<UPauseMenu>(this, PauseMenuClass);
 	if (!ensure(PauseMenu != nullptr))return;
+
 	PauseMenu->Setup();
 	PauseMenu->SetMenuInterface(this);
+	UWorld* World = GetWorld();
+	if (World != nullptr) {
+		UGameplayStatics::SetGamePaused(GetWorld(), true);
+	}
 }
 
 void UUniverseGameInstance::GameOver() {

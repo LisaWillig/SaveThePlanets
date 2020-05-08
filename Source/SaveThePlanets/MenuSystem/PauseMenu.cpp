@@ -3,6 +3,8 @@
 
 #include "PauseMenu.h"
 #include "Components/Button.h"
+#include "Kismet/GameplayStatics.h"
+#include "../UniverseGameInstance.h"
 
 bool UPauseMenu::Initialize() {
 	bool Success = Super::Initialize();
@@ -26,11 +28,20 @@ bool UPauseMenu::Initialize() {
 
 void UPauseMenu::Start() {
 	if (MenuInterface == nullptr) return;
+	UWorld* World = GetWorld();
+	if (World != nullptr) {
+		UGameplayStatics::SetGamePaused(GetWorld(), false);
+	}
 	MenuInterface->Start();
 }
 
 void UPauseMenu::Resume() {
 	this->RemoveFromViewport();
+	UWorld* World = GetWorld();
+	if (World != nullptr) {
+		UGameplayStatics::SetGamePaused(GetWorld(), false);
+	}
+	Cast<UUniverseGameInstance>(GetGameInstance())->RefocusSlider();
 }
 
 void UPauseMenu::Quit() {
