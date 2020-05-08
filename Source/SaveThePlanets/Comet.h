@@ -29,6 +29,7 @@ public:
 	void ApplyVelocity(float DeltaTime);
 	void ApplyRotation(float DeltaTime);
 	float RotationVector();
+	void CheckPosition();
 
 	UPROPERTY(VisibleAnywhere, Category = "Comet")
 	UStaticMeshComponent* CometMesh;

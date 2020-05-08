@@ -32,8 +32,17 @@ void AComet::Tick(float DeltaTime)
 	ApplyRotation(DeltaTime);
 	ApplyVelocity(DeltaTime);
 
+	CheckPosition();
+
 }
 
+void AComet::CheckPosition() {
+	FVector Location = GetActorLocation();
+	if (Location.GetMax() > 1000 || Location.GetMin() < -1000) {
+		UE_LOG(LogTemp, Warning, TEXT("Destroyed"))
+		Destroy();
+	}
+}
 void AComet::ApplyRotation(float DeltaTime) {
 	float RotationAngle = Velocity.Size() * DeltaTime / (2 * 10); // in Radians
 	FQuat RotationDelta(GetActorUpVector(), 2*RotationAngle);

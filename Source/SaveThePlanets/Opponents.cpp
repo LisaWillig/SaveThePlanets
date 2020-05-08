@@ -49,7 +49,7 @@ FRotator AOpponents::GenerateSpawnRotation(FVector SpawnPoint) {
 	
 	//A: Actor Location
 	//B: Random Point in Level Area
-	float alphaAngle = FMath::RandRange(10., 40); // Angle (Degree) at radius between A and B
+	float alphaAngle = FMath::RandRange(10., 60); // Angle (Degree) at radius between A and B
 	float betaAngle = (180 - alphaAngle) / 2;
 	
 	float Radius = (FVector::Dist(SpawnPoint, PointOnCircle) * FMath::Sin(betaAngle)) / FMath::Sin(alphaAngle);
@@ -60,10 +60,10 @@ FRotator AOpponents::GenerateSpawnRotation(FVector SpawnPoint) {
 }
 
 FVector AOpponents::GenerateSpawnPoint() {
-	float xOne = FMath::RandRange(-750, -500);
-	float xTwo = FMath::RandRange(500, 750);
-	float yOne = FMath::RandRange(-750, -500);
-	float yTwo = FMath::RandRange(500, 750);
+	float xOne = FMath::RandRange(-1000, -750);
+	float xTwo = FMath::RandRange(750, 1000);
+	float yOne = FMath::RandRange(-1000, -750);
+	float yTwo = FMath::RandRange(750, 1000);
 
 	float quadrant = FMath::RandRange(0, 4);
 
