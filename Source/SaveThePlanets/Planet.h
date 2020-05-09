@@ -31,7 +31,7 @@ public:
 
 	void Collision(float mass);
 
-	UPROPERTY(VisibleAnywhere, Category = "Planet")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite,  Category = "Planet")
 	UStaticMeshComponent* PlanetMesh;
 
 	UPROPERTY(VisibleAnywhere, Category = "Planet")
