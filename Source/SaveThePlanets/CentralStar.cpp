@@ -3,6 +3,8 @@
 
 #include "CentralStar.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/StaticMeshComponent.h"
+#include "UniverseGameInstance.h"
 
 // Sets default values
 ACentralStar::ACentralStar()
@@ -12,12 +14,14 @@ ACentralStar::ACentralStar()
 	StarMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StarMesh"));
 	CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("StarCollision"));
 	CapsuleComponent->InitCapsuleSize(100, 100);
+	RootComponent = StarMesh;
 }
 
 // Called when the game starts or when spawned
 void ACentralStar::BeginPlay()
 {
 	Super::BeginPlay();
+	GameInstance = Cast<UUniverseGameInstance>(GetGameInstance());
 	
 }
 
@@ -26,5 +30,15 @@ void ACentralStar::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	float TimeControl = GameInstance->GetTime();
+	RotateDay(TimeControl * DeltaTime);
+
+
 }
 
+void ACentralStar::RotateDay(float DeltaTime)
+{
+	FRotator Rotatevelocity = StarMesh->GetComponentRotation();
+	Rotatevelocity.Yaw = Rotatevelocity.Yaw + DeltaTime * 20.f;
+	StarMesh->SetRelativeRotation(Rotatevelocity);
+}

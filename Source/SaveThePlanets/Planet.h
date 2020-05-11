@@ -22,6 +22,8 @@ protected:
 
 	void calculateVeloctiy(float DeltaTime);
 
+	void RotateDay(float DeltaTime);
+
 	class ACentralStar* MySun;
 	class UUniverseGameInstance* GameInstance;
 

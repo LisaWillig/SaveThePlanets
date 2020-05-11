@@ -5,6 +5,7 @@
 #include "CentralStar.h"
 #include "DrawDebugHelpers.h"
 #include "UniverseGameInstance.h"
+#include "Components/StaticMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -16,6 +17,7 @@ APlanet::APlanet()
 	PlanetMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlanetMesh"));
     CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("PlanetCollision"));
     CapsuleComponent->InitCapsuleSize(Radius * 0.05, Radius * 0.05);
+    RootComponent = PlanetMesh;
    
 }
 
@@ -39,7 +41,9 @@ void APlanet::Tick(float DeltaTime)
     }
 
     float TimeControl = GameInstance->GetTime();
+
     calculateVeloctiy(DeltaTime*TimeControl);
+    
 }
 
 void APlanet::calculateVeloctiy(float DeltaTime) {
@@ -64,9 +68,17 @@ void APlanet::calculateVeloctiy(float DeltaTime) {
     float DistanzError = dist - Distance;
     FVector ErrorCorrection = DistanzError * DirectionForce;
 
+    RotateDay(DeltaTime);
     SetActorLocation(DeltaPosition + GetActorLocation()+ErrorCorrection);
     CapsuleComponent->SetWorldTransform(GetActorTransform());
     
+}
+
+void APlanet::RotateDay(float DeltaTime)
+{
+    FRotator Rotatevelocity = PlanetMesh->GetComponentRotation();
+    Rotatevelocity.Yaw = Rotatevelocity.Yaw + DeltaTime * 20.f;
+    PlanetMesh->SetRelativeRotation(Rotatevelocity);
 }
 
 void APlanet::GetTheSun() {
