@@ -29,6 +29,7 @@ void APlanet::BeginPlay()
     GameInstance = Cast<UUniverseGameInstance>(GetGameInstance());
     SetActorScale3D(FVector(Radius * 0.001));
     Distance = FVector::Dist2D(GetActorLocation(), FVector(0, 0, 0)) * 0.01;
+    dayRotationSpeed = FMath::RandRange(1, 100);
 }
 
 // Called every frame
@@ -42,42 +43,38 @@ void APlanet::Tick(float DeltaTime)
 
     float TimeControl = GameInstance->GetTime();
 
-    calculateVeloctiy(DeltaTime*TimeControl);
-    
+    applyLocationOffset(DeltaTime*TimeControl);
+    applyRotationOffset(DeltaTime * TimeControl);
 }
 
-void APlanet::calculateVeloctiy(float DeltaTime) {
+void APlanet::applyLocationOffset(float DeltaTime) {
     if (MySun == nullptr) {return;}
 
-    float dist = FVector::Dist2D(GetActorLocation(), FVector(0, 0, 0)) * 0.01; // Distance in Meter
-    float velocityMagnitude = GravityConstant * MySun->StarMass / dist;
+    float const dist = FVector::Dist2D(GetActorLocation(), FVector(0, 0, 0)) * 0.01; // Distance in Meter
+    float const velocityMagnitude = GravityConstant * MySun->StarMass / dist;
 
-    FVector DirectionForce = -(GetActorLocation().GetSafeNormal());
-    FVector VelocityForce = FVector(DirectionForce.Y, -DirectionForce.X, 0);
+    FVector const DirectionForce = -(GetActorLocation().GetSafeNormal());
+    FVector const VelocityForce = FVector(DirectionForce.Y, -DirectionForce.X, 0);
 
-    float winkel = velocityMagnitude * DeltaTime;
-    float bogen = winkel / 360 * 2 * PI;
-
-    FVector DeltaPosition = bogen * VelocityForce;
+    float const DeltaAngle = velocityMagnitude * DeltaTime;
+    float const DeltaCirclePath = DeltaAngle / 360 * 2 * PI;
+    FVector const DeltaPosition = DeltaCirclePath * VelocityForce;
 
     /*  when the Time is large, so the angle to cross is big, 
         the approximation that Deltav = v* Delta_angle is not valid anymore
         As a result, the planets would move outwards in a spiral, 
         the higher the angle eg. "time" is.
      */
-    float DistanzError = dist - Distance;
-    FVector ErrorCorrection = DistanzError * DirectionForce;
+    FVector const ErrorCorrection = (dist - Distance) * DirectionForce;
 
-    RotateDay(DeltaTime);
     SetActorLocation(DeltaPosition + GetActorLocation()+ErrorCorrection);
     CapsuleComponent->SetWorldTransform(GetActorTransform());
-    
 }
 
-void APlanet::RotateDay(float DeltaTime)
+void APlanet::applyRotationOffset(float DeltaTime)
 {
     FRotator Rotatevelocity = PlanetMesh->GetComponentRotation();
-    Rotatevelocity.Yaw = Rotatevelocity.Yaw + DeltaTime * 20.f;
+    Rotatevelocity.Yaw = Rotatevelocity.Yaw + DeltaTime * dayRotationSpeed;
     PlanetMesh->SetRelativeRotation(Rotatevelocity);
 }
 

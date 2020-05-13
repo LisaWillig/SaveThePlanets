@@ -22,7 +22,7 @@ void ACentralStar::BeginPlay()
 {
 	Super::BeginPlay();
 	GameInstance = Cast<UUniverseGameInstance>(GetGameInstance());
-	
+	dayRotationSpeed = FMath::RandRange(1, 10);
 }
 
 // Called every frame
@@ -31,14 +31,14 @@ void ACentralStar::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	float TimeControl = GameInstance->GetTime();
-	RotateDay(TimeControl * DeltaTime);
+	applyRotationOffset(TimeControl * DeltaTime);
 
 
 }
 
-void ACentralStar::RotateDay(float DeltaTime)
+void ACentralStar::applyRotationOffset(float DeltaTime)
 {
 	FRotator Rotatevelocity = StarMesh->GetComponentRotation();
-	Rotatevelocity.Yaw = Rotatevelocity.Yaw + DeltaTime * 20.f;
+	Rotatevelocity.Yaw = Rotatevelocity.Yaw + DeltaTime * dayRotationSpeed;
 	StarMesh->SetRelativeRotation(Rotatevelocity);
 }

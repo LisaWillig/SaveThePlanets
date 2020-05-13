@@ -15,18 +15,20 @@ public:
 	// Sets default values for this actor's properties
 	ACentralStar();
 
-	class UUniverseGameInstance* GameInstance;
-	void RotateDay(float DeltaTime);
+	UPROPERTY(EditAnywhere, Category = "Star")
+	float StarMass = 10000; //kg 
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+private:
 
+	class UUniverseGameInstance* GameInstance;
+	void applyRotationOffset(float DeltaTime);
 
 	UPROPERTY(VisibleAnywhere, Category = "Star")
 	class UStaticMeshComponent* StarMesh;
@@ -34,6 +36,7 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "Star")
 	class UCapsuleComponent* CapsuleComponent;
 
-	UPROPERTY(EditAnywhere, Category = "Star")
-	float StarMass = 10000; //kg 
+	uint8 dayRotationSpeed; 
+
+
 };
