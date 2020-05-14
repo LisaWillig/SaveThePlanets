@@ -109,7 +109,7 @@ void UUniverseGameInstance::GameOver() {
 		Score = gameMode->Score;
 		if (Score > HighScore) {
 			HighScore = Score;
-			UE_LOG(LogTemp, Warning, TEXT("Highscore: %f, Score: %f"), HighScore, Score)
+			//UE_LOG(LogTemp, Warning, TEXT("Highscore: %f, Score: %f"), HighScore, Score)
 			saveHighScore(HighScore);
 		}
 	}

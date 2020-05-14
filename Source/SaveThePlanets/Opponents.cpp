@@ -23,6 +23,7 @@ void AOpponents::BeginPlay()
 
 void AOpponents::RepeatingFunction()
 {
+	UE_LOG(LogTemp, Warning, TEXT("%i"), RepeatingCallsRemaining)
 	if (CometClass != nullptr) {
 		FVector SpawnPoint = GenerateSpawnPoint();
 		FRotator Rotation = GenerateSpawnRotation(SpawnPoint);
@@ -35,27 +36,18 @@ void AOpponents::RepeatingFunction()
 		enemy->SetParameters(mass, size, speed);
 	}
 
-    /* Example for clearing Timer
-    if (--RepeatingCallsRemaining <= 0){
+    // Clearing Timer
+    /*if (--RepeatingCallsRemaining <= 0){
         GetWorldTimerManager().ClearTimer(TimerHandle);
+		RepeatingCallsRemaining = 10;
     }*/
-
-
 }
 
 FRotator AOpponents::GenerateSpawnRotation(FVector SpawnPoint) {
-	FBox BoxPointInCircle = FBox(FVector(-500, -500, 0), FVector(500, 500, 0));
+	FBox BoxPointInCircle = FBox(FVector(-250, -250, 0), FVector(250, 250, 0));
 	FVector PointOnCircle = FMath::RandPointInBox(BoxPointInCircle);
 	
-	//A: Actor Location
-	//B: Random Point in Level Area
-	float alphaAngle = FMath::RandRange(10., 60); // Angle (Degree) at radius between A and B
-	float betaAngle = (180 - alphaAngle) / 2;
-	
-	float Radius = (FVector::Dist(SpawnPoint, PointOnCircle) * FMath::Sin(betaAngle)) / FMath::Sin(alphaAngle);
-
 	FVector InitialDirection = (PointOnCircle - SpawnPoint).GetSafeNormal();
-	//DrawDebugLine(GetWorld(), SpawnPoint, PointOnCircle, FColor(0, 255, 0, 1), true, -1.f, 2, 10.f);
 	return InitialDirection.Rotation();
 }
 

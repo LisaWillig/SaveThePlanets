@@ -16,21 +16,21 @@ public:
 	// Sets default values for this actor's properties
 	AOpponents();
 
+	UPROPERTY(EditDefaultsOnly, Category = "Comet")
+	TSubclassOf<class AComet> CometClass;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
+private:
+
+	int8 RepeatingCallsRemaining = 10;
 	virtual void Tick(float DeltaTime) override;
 	FTimerHandle TimerHandle;
 	void RepeatingFunction();
 
-	int RepeatingCallsRemaining = 10;
 	FVector GenerateSpawnPoint();
 	FRotator GenerateSpawnRotation(FVector SpawnPoint);
-
-	UPROPERTY(EditDefaultsOnly, Category = "Comet")
-	TSubclassOf<class AComet> CometClass;
 
 };
