@@ -7,6 +7,28 @@
 #include "Components/CapsuleComponent.h"
 #include "Planet.generated.h"
 
+
+USTRUCT()
+struct FPlanetParameters
+{
+	GENERATED_USTRUCT_BODY()
+
+	uint8 dayRotationSpeed;
+
+	UPROPERTY(VisibleAnywhere, Category = "Planet")
+	float Radius; //km 
+
+	UPROPERTY(VisibleAnywhere, Category = "Planet")
+	float PlanetMass; //kg 
+
+	float PlanetIntegrity; //kg 
+
+	UPROPERTY(VisibleAnywhere, Category = "Planet")
+	float Distance; //km 
+
+};
+
+
 UCLASS()
 class SAVETHEPLANETS_API APlanet : public AActor
 {
@@ -19,6 +41,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	void InitializePlanetParams();
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -35,26 +58,20 @@ public:
 	UCapsuleComponent* CapsuleComponent;
 
 	UPROPERTY(EditAnywhere, Category = "Planet")
-	float PlanetMass = 100; //kg 
-
-	UPROPERTY(EditAnywhere, Category = "Planet")
-	float Radius = 1000; //km 
-
-	UPROPERTY(EditAnywhere, Category = "Planet")
-	float Distance = 100; //km 
-
-	UPROPERTY(EditAnywhere, Category = "Planet")
 	float GravityConstant = 1; // 6.678 * 10^-11 m^3/kg s^2
+
+	UPROPERTY(VisibleAnywhere, Category = "Planet")
+	FPlanetParameters PlanetParams;
 
 private:
 
 	void GetTheSun();
 	void applyLocationOffset(float DeltaTime);
-
 	void applyRotationOffset(float DeltaTime);
 
 	class ACentralStar* MySun;
 	class UUniverseGameInstance* GameInstance;
 
-	uint8 dayRotationSpeed;
+
+	
 };

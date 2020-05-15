@@ -16,7 +16,12 @@ APlanet::APlanet()
 
 	PlanetMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlanetMesh"));
     CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("PlanetCollision"));
-    CapsuleComponent->InitCapsuleSize(Radius * 0.05, Radius * 0.05);
+
+
+
+
+    //PlanetParams = PlanetParameters();
+    
     RootComponent = PlanetMesh;
    
 }
@@ -27,9 +32,19 @@ void APlanet::BeginPlay()
 	Super::BeginPlay();
 	
     GameInstance = Cast<UUniverseGameInstance>(GetGameInstance());
-    SetActorScale3D(FVector(Radius * 0.001));
-    Distance = FVector::Dist2D(GetActorLocation(), FVector(0, 0, 0)) * 0.01;
-    dayRotationSpeed = FMath::RandRange(1, 100);
+
+    InitializePlanetParams();
+}
+
+void APlanet::InitializePlanetParams()
+{
+    PlanetParams.Radius = FMath::RandRange(500, 1500);
+    CapsuleComponent->InitCapsuleSize(PlanetParams.Radius * 0.05, PlanetParams.Radius * 0.05); //calc from m too cm
+    SetActorScale3D(FVector(PlanetParams.Radius * 0.001));
+    PlanetParams.Distance = FVector::Dist2D(GetActorLocation(), FVector(0, 0, 0)) * 0.01; // m to cm
+    PlanetParams.dayRotationSpeed = FMath::RandRange(1, 100);
+    PlanetParams.PlanetMass = FMath::RandRange(1, 5) * PlanetParams.Radius / 10;
+    PlanetParams.PlanetIntegrity = PlanetParams.PlanetMass / 100;
 }
 
 // Called every frame
@@ -65,7 +80,7 @@ void APlanet::applyLocationOffset(float DeltaTime) {
         As a result, the planets would move outwards in a spiral, 
         the higher the angle eg. "time" is.
      */
-    FVector const ErrorCorrection = (dist - Distance) * DirectionForce;
+    FVector const ErrorCorrection = (dist - PlanetParams.Distance) * DirectionForce;
 
     SetActorLocation(DeltaPosition + GetActorLocation()+ErrorCorrection);
     CapsuleComponent->SetWorldTransform(GetActorTransform());
@@ -74,7 +89,7 @@ void APlanet::applyLocationOffset(float DeltaTime) {
 void APlanet::applyRotationOffset(float DeltaTime)
 {
     FRotator Rotatevelocity = PlanetMesh->GetComponentRotation();
-    Rotatevelocity.Yaw = Rotatevelocity.Yaw + DeltaTime * dayRotationSpeed;
+    Rotatevelocity.Yaw = Rotatevelocity.Yaw + DeltaTime * PlanetParams.dayRotationSpeed;
     PlanetMesh->SetRelativeRotation(Rotatevelocity);
 }
 
@@ -92,8 +107,8 @@ void APlanet::GetTheSun() {
 }
        
 void APlanet::Collision(float mass) {
-    PlanetMass = PlanetMass - mass;
-    if (PlanetMass <= 0) {
+    PlanetParams.PlanetIntegrity = PlanetParams.PlanetIntegrity - (PlanetParams.PlanetIntegrity/mass);
+    if (PlanetParams.PlanetIntegrity <= 0) {
         auto Instance = Cast<UUniverseGameInstance>(GetGameInstance());
         if (Instance != nullptr) {
             this->Destroy();
