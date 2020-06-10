@@ -32,6 +32,10 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* TextScore;
 
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* HighScore;
+
+	float High = 0;
 	float Score = 0;
 
 	UFUNCTION()

@@ -60,9 +60,20 @@ float UUniverseGameInstance::GetTime() {
 	return TimeValue;
 }
 
+void UUniverseGameInstance::SetScore(int8 value) {
+	if (Slider == nullptr) { return; }
+	Cast<UTimeSlider>(Slider)->SetScore(value);
+}
+
+void UUniverseGameInstance::SetMultiplier(int8 value) {
+	if (Slider == nullptr) { return; }
+	Cast<UTimeSlider>(Slider)->SetMultiplier(value);
+}
+
 void UUniverseGameInstance::TravelMainMenu() {
 	APlayerController* PlayerController = GetFirstLocalPlayerController();
 	if (!ensure(PlayerController != nullptr)) return;
+	bGameStart = false;
 	PlayerController->ClientTravel("/Game/Maps/MainMenuLevel", ETravelType::TRAVEL_Absolute);
 }
 
@@ -105,11 +116,9 @@ void UUniverseGameInstance::GameOver() {
 	auto gameMode = Cast<ASaveThePlanetsGameModeBase>(GetWorld()->GetAuthGameMode());
 	
 	if (gameMode != nullptr) {
-		gameMode->clearTimerHighScore();
 		Score = gameMode->Score;
 		if (Score > HighScore) {
 			HighScore = Score;
-			//UE_LOG(LogTemp, Warning, TEXT("Highscore: %f, Score: %f"), HighScore, Score)
 			saveHighScore(HighScore);
 		}
 	}
@@ -120,14 +129,18 @@ void UUniverseGameInstance::GameOver() {
 	EndGameMenu->Setup();
 	EndGameMenu->SetMenuInterface(this);
 }
+
 void UUniverseGameInstance::saveHighScore_Implementation(float score){}
 
 void UUniverseGameInstance::Start() {
 	bGameOver = false;
 	APlayerController* PlayerController = GetFirstLocalPlayerController();
 	if (!ensure(PlayerController != nullptr)) return;
+	bGameStart = true;
 	PlayerController->ClientTravel("/Game/Maps/Universe", ETravelType::TRAVEL_Absolute);
+
 }
+
 void UUniverseGameInstance::Quit() {
 	auto* playerController = GetWorld()->GetFirstPlayerController();
 	if (!ensure(playerController != nullptr)) return;

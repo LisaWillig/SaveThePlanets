@@ -5,7 +5,35 @@
 #include "CoreMinimal.h"
 #include "Opponents.h"
 #include "Components/CapsuleComponent.h"
+#include "Sound/SoundCue.h"
 #include "Comet.generated.h"
+
+USTRUCT()
+struct FCometParameters
+{
+	GENERATED_USTRUCT_BODY()
+
+	uint8 dayRotationSpeed;
+
+	UPROPERTY(VisibleAnywhere, Category = "Comet")
+	float speed = 10; //km 
+
+	UPROPERTY(VisibleAnywhere, Category = "Comet")
+	float rad; //Circle intensity of original path 
+
+	UPROPERTY(VisibleAnywhere, Category = "Comet")
+	float mass; //kg 
+
+	UPROPERTY(VisibleAnywhere, Category = "Comet")
+	FVector Velocity;
+
+	UPROPERTY(VisibleAnywhere, Category = "Comet")
+	FVector GravityVelocity;
+
+	UPROPERTY(VisibleAnywhere, Category = "Comet")
+	bool bCometIntention; // good: gain more points, bad: lose more points
+
+};
 
 UCLASS()
 class SAVETHEPLANETS_API AComet : public AActor
@@ -24,27 +52,41 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	FVector GenerateSpawnPoint();
+	UPROPERTY(VisibleAnywhere, Category = "Comet")
+	FCometParameters CometParams;
+
 	void SetParameters(float mass, float size, float speed);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Comet")
+		UStaticMeshComponent* CometMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Comet")
+	bool bMaterial; 
+
+private:
+
+	FVector GenerateSpawnPoint();
+	
 	void ApplyVelocity(float DeltaTime);
 	void ApplyRotation(float DeltaTime);
-	float RotationVector();
 	void CheckPosition();
 
-	UPROPERTY(VisibleAnywhere, Category = "Comet")
-	UStaticMeshComponent* CometMesh;
+	UPROPERTY(EditDefaultsOnly, Category = "Comet")
+	USoundCue* TestSound; 
+
 
 	UPROPERTY(VisibleAnywhere, Category = "Comet")
-	UCapsuleComponent* CapsuleComponent;
-
-	FVector Velocity;
+		UCapsuleComponent* CapsuleComponent;
 
 	UFUNCTION()
-	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+		void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	float mass;
-	float rad;
+	void GetTheSun();
+	class ACentralStar* MySun;
 
-	UPROPERTY(EditAnywhere, Category = "Movement")
-		float speed = 10;
+	void ApplyStarGravity();
+
+	UPROPERTY(EditDefaultsOnly, Category = "Comet")
+	UParticleSystem* ExplosionEmitter;
+
 };

@@ -17,8 +17,11 @@ class SAVETHEPLANETS_API ASaveThePlanetsGameModeBase : public AGameModeBase
 
 public:
 	virtual void BeginPlay() override;
+
 	void CountHighScore();
-	void clearTimerHighScore();
+
 	FTimerHandle TimerHandle;
 	float Score;
+	int8 ScoreMultiplayer = 1;
+	class UUniverseGameInstance* gameInstance;
 };

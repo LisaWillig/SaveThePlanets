@@ -7,6 +7,9 @@
 #include "UniverseGameInstance.h"
 #include "Components/StaticMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/ProgressBar.h"
+#include "Components/WidgetComponent.h"
+
 
 // Sets default values
 APlanet::APlanet()
@@ -16,14 +19,10 @@ APlanet::APlanet()
 
 	PlanetMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlanetMesh"));
     CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("PlanetCollision"));
-
-
-
-
-    //PlanetParams = PlanetParameters();
+    HealthBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBar"));
     
     RootComponent = PlanetMesh;
-   
+    HealthBar->SetVisibility(false);
 }
 
 // Called when the game starts or when spawned
@@ -32,19 +31,19 @@ void APlanet::BeginPlay()
 	Super::BeginPlay();
 	
     GameInstance = Cast<UUniverseGameInstance>(GetGameInstance());
-
+    HealthProgress = Cast<UProgressBar>(HealthBar->GetUserWidgetObject()->GetRootWidget());
     InitializePlanetParams();
 }
 
 void APlanet::InitializePlanetParams()
 {
-    PlanetParams.Radius = FMath::RandRange(500, 1500);
-    CapsuleComponent->InitCapsuleSize(PlanetParams.Radius * 0.05, PlanetParams.Radius * 0.05); //calc from m too cm
+    PlanetParams.Radius = FMath::RandRange(500, 1250);
+    CapsuleComponent->SetCapsuleSize(PlanetParams.Radius*0.045, PlanetParams.Radius*0.045, true); //calc from m too cm
     SetActorScale3D(FVector(PlanetParams.Radius * 0.001));
     PlanetParams.Distance = FVector::Dist2D(GetActorLocation(), FVector(0, 0, 0)) * 0.01; // m to cm
     PlanetParams.dayRotationSpeed = FMath::RandRange(1, 100);
-    PlanetParams.PlanetMass = FMath::RandRange(1, 5) * PlanetParams.Radius / 10;
-    PlanetParams.PlanetIntegrity = PlanetParams.PlanetMass / 100;
+    PlanetParams.PlanetMass = FMath::RandRange(1, 3) * PlanetParams.Radius / 10;
+    PlanetParams.PlanetIntegrity = 100;
 }
 
 // Called every frame
@@ -84,6 +83,7 @@ void APlanet::applyLocationOffset(float DeltaTime) {
 
     SetActorLocation(DeltaPosition + GetActorLocation()+ErrorCorrection);
     CapsuleComponent->SetWorldTransform(GetActorTransform());
+    HealthBar->SetRelativeLocation(GetActorLocation());
 }
 
 void APlanet::applyRotationOffset(float DeltaTime)
@@ -105,12 +105,39 @@ void APlanet::GetTheSun() {
        UE_LOG(LogTemp, Warning, TEXT("No Sun!"))
    }
 }
-       
+     
+void APlanet::UpdateHealthBar() {
+    RepeatingCallsRemaining = 4;
+    HealthBar->SetVisibility(true);
+    if (HealthProgress != nullptr) {
+        HealthProgress->SetPercent(PlanetParams.PlanetIntegrity*0.01);
+    }
+    GetWorldTimerManager().SetTimer(HealthBarTimerHandle, this, &APlanet::ShowHealthBar, 2.f, true, 1.0f);
+}
+
+void APlanet::ShowHealthBar() {
+	if (--RepeatingCallsRemaining <= 0)
+	{
+        HealthBar->SetVisibility(false);
+	}
+}
+
+
 void APlanet::Collision(float mass) {
-    PlanetParams.PlanetIntegrity = PlanetParams.PlanetIntegrity - (PlanetParams.PlanetIntegrity/mass);
+    PlanetParams.PlanetIntegrity = PlanetParams.PlanetIntegrity - (100*mass/ PlanetParams.PlanetMass);
+    UE_LOG(LogTemp, Warning, TEXT("Integ: %f"), PlanetParams.PlanetIntegrity)
+    UpdateHealthBar();
     if (PlanetParams.PlanetIntegrity <= 0) {
         auto Instance = Cast<UUniverseGameInstance>(GetGameInstance());
         if (Instance != nullptr) {
+			UGameplayStatics::SpawnEmitterAtLocation(
+				GetWorld(),
+				ExplosionEmitter,
+				GetActorTransform(),
+				true,
+				EPSCPoolMethod::AutoRelease,
+				true
+			);
             this->Destroy();
             Instance->GameOver();
         }

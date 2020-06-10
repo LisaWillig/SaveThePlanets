@@ -19,17 +19,29 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	class USlider* TimeSlider;
 
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* Score;
+
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* Multiplier;
+
 	UFUNCTION()
 	void SetTimeValue(float time);
 
 	float Time;
 
 	class UUniverseGameInstance* GameInstance;
+
 protected:
 
 	UFUNCTION()
 	float GetTimeValue();
 
+
 	virtual bool Initialize() override;
+
+public:
+	void SetScore(int8 ScoreValue);
+	void SetMultiplier(int8 MultiplierValue);
 
 };

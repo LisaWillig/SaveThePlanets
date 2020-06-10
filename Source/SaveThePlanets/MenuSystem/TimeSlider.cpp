@@ -3,6 +3,7 @@
 
 #include "TimeSlider.h"
 #include "Components/Slider.h"
+#include "Components/TextBlock.h"
 #include "../UniverseGameInstance.h"
 
 
@@ -25,4 +26,13 @@ void UTimeSlider::SetTimeValue(float time) {
 
 float UTimeSlider::GetTimeValue() {
 	return Time;
+}
+
+void UTimeSlider::SetScore(int8 ScoreValue) {
+	Score->SetText(FText::FromString(FString::FromInt(ScoreValue)));
+}
+
+void UTimeSlider::SetMultiplier(int8 MultiplierValue) {
+	Multiplier->SetText(FText::FromString(FString::FromInt(MultiplierValue)));
+
 }

@@ -25,12 +25,14 @@ protected:
 
 private:
 
-	int8 RepeatingCallsRemaining = 10;
+	int8 RepeatingCallsRemaining = 1;
 	virtual void Tick(float DeltaTime) override;
 	FTimerHandle TimerHandle;
 	void RepeatingFunction();
 
+	void SetSpawnTimer();
+
 	FVector GenerateSpawnPoint();
 	FRotator GenerateSpawnRotation(FVector SpawnPoint);
-
+	float SpawnRate = 5.f;
 };

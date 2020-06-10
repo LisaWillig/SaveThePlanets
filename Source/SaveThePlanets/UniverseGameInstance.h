@@ -27,6 +27,7 @@ public:
     void SetTime(float NewTime);
     float GetTime();
 
+    void SetScore(int8 value);
     void Start();
     void Quit();
     void Highscore();
@@ -34,6 +35,7 @@ public:
     UFUNCTION(BlueprintCallable)
     void LoadMainMenu();
 
+    void SetMultiplier(int8 value);
     UFUNCTION(BlueprintCallable)
     void TravelMainMenu();
 
@@ -53,10 +55,13 @@ public:
     void saveHighScore(float score);
 
     bool bGameOver = false;
-    float Score;
+    bool bGameStart = false;
+    int Score;
+    
+    
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-    float HighScore;
+      int HighScore;
 
 private:
     float TimeValue;

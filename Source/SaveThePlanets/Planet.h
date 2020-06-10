@@ -50,6 +50,8 @@ public:
 
 	void Collision(float mass);
 
+	UPROPERTY(meta = (BindWidget))
+	class UProgressBar* HealthProgress;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite,  Category = "Planet")
 	UStaticMeshComponent* PlanetMesh;
@@ -60,8 +62,19 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Planet")
 	float GravityConstant = 1; // 6.678 * 10^-11 m^3/kg s^2
 
-	UPROPERTY(VisibleAnywhere, Category = "Planet")
+	UPROPERTY(EditDefaultsOnly, Category = "Planet")
 	FPlanetParameters PlanetParams;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Comet")
+	UParticleSystem* ExplosionEmitter;
+
+	UPROPERTY(VisibleAnywhere, Category = "Comet")
+	class UWidgetComponent* HealthBar;
+
+	void UpdateHealthBar();
+	void ShowHealthBar();
+	int8 RepeatingCallsRemaining;
+	FTimerHandle HealthBarTimerHandle;
 
 private:
 

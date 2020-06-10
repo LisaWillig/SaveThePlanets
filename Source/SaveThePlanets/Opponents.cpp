@@ -17,30 +17,35 @@ AOpponents::AOpponents()
 void AOpponents::BeginPlay()
 {
 	Super::BeginPlay();
-	GetWorldTimerManager().SetTimer(TimerHandle, this, &AOpponents::RepeatingFunction, 1.0f, true, 1.0f);
-	
+	SetSpawnTimer();
 }
 
+void AOpponents::SetSpawnTimer() {
+	RepeatingCallsRemaining = 10;
+	
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &AOpponents::RepeatingFunction, SpawnRate, true, 1.0f);
+	SpawnRate = SpawnRate / 2;
+
+}
 void AOpponents::RepeatingFunction()
 {
-	UE_LOG(LogTemp, Warning, TEXT("%i"), RepeatingCallsRemaining)
+
 	if (CometClass != nullptr) {
 		FVector SpawnPoint = GenerateSpawnPoint();
 		FRotator Rotation = GenerateSpawnRotation(SpawnPoint);
 		auto enemy = GetWorld()->SpawnActor<AComet>(CometClass, SpawnPoint, Rotation);
 
-		float mass = FMath::RandRange(1, 100);
-		float size = FMath::RandRange(0.05f, 0.2f);
-		float speed = FMath::RandRange(10, 500);
+		float mass = FMath::RandRange(100, 200);
+		float size = FMath::RandRange(0.1f, 0.2f);
+		float speed = FMath::RandRange(100, 500);
 
 		enemy->SetParameters(mass, size, speed);
 	}
 
-    // Clearing Timer
-    /*if (--RepeatingCallsRemaining <= 0){
-        GetWorldTimerManager().ClearTimer(TimerHandle);
-		RepeatingCallsRemaining = 10;
-    }*/
+    // Reset Timer with higher Spawnrate
+    if (--RepeatingCallsRemaining <= 0){
+		SetSpawnTimer();		
+    }
 }
 
 FRotator AOpponents::GenerateSpawnRotation(FVector SpawnPoint) {

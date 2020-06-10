@@ -23,9 +23,10 @@ bool UEndGameMenu::Initialize() {
 	auto gameInstance = Cast<UUniverseGameInstance>(GetWorld()->GetGameInstance());
 	if (gameInstance != nullptr) {
 		Score = gameInstance->Score;
+		High = gameInstance->HighScore;
 	}
 	TextScore->SetText(FText::AsNumber(Score));
-
+	HighScore->SetText(FText::AsNumber(High));
 	return true;
 }
 
