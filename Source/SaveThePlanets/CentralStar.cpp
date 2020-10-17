@@ -22,7 +22,7 @@ void ACentralStar::BeginPlay()
 {
 	Super::BeginPlay();
 	GameInstance = Cast<UUniverseGameInstance>(GetGameInstance());
-	dayRotationSpeed = FMath::RandRange(1, 10);
+	dayRotationSpeed = FMath::RandRange(5, 20);
 }
 
 // Called every frame

@@ -50,6 +50,9 @@ public:
 
 	void Collision(float mass);
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Planet")
+	bool bDebugDamage = false;
+
 	UPROPERTY(meta = (BindWidget))
 	class UProgressBar* HealthProgress;
 

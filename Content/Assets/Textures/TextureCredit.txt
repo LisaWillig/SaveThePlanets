@@ -1,2 +1,4 @@
 NASA_Earth.jpg: NASA, VisibleEarth, "The Blue Marble: Land Surface, Ocean Color, Sea Ice and Clouds"
 Images ending on "_SolarSystemScope": https://www.solarsystemscope.com/textures/
+CloudTextures: https://3djungle.net/
+HeavenTexture: by Headsh00t, https://www.brusheezy.com/

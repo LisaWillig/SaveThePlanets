@@ -23,6 +23,7 @@ APlanet::APlanet()
     
     RootComponent = PlanetMesh;
     HealthBar->SetVisibility(false);
+
 }
 
 // Called when the game starts or when spawned
@@ -33,6 +34,8 @@ void APlanet::BeginPlay()
     GameInstance = Cast<UUniverseGameInstance>(GetGameInstance());
     HealthProgress = Cast<UProgressBar>(HealthBar->GetUserWidgetObject()->GetRootWidget());
     InitializePlanetParams();
+    FAttachmentTransformRules AttachementRules(EAttachmentRule::SnapToTarget, false);
+    HealthBar->AttachToComponent(PlanetMesh, AttachementRules, "Socket_HealthBar");
 }
 
 void APlanet::InitializePlanetParams()
@@ -83,6 +86,7 @@ void APlanet::applyLocationOffset(float DeltaTime) {
 
     SetActorLocation(DeltaPosition + GetActorLocation()+ErrorCorrection);
     CapsuleComponent->SetWorldTransform(GetActorTransform());
+    //HealthBar->AddLocalOffset(GetActorLocation());
     HealthBar->SetRelativeLocation(GetActorLocation());
 }
 
@@ -124,7 +128,9 @@ void APlanet::ShowHealthBar() {
 
 
 void APlanet::Collision(float mass) {
-    PlanetParams.PlanetIntegrity = PlanetParams.PlanetIntegrity - (100*mass/ PlanetParams.PlanetMass);
+    if (!bDebugDamage) {
+        PlanetParams.PlanetIntegrity = PlanetParams.PlanetIntegrity - (100 * mass / PlanetParams.PlanetMass);
+    }
     UE_LOG(LogTemp, Warning, TEXT("Integ: %f"), PlanetParams.PlanetIntegrity)
     UpdateHealthBar();
     if (PlanetParams.PlanetIntegrity <= 0) {
